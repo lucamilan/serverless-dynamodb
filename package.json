@@ -17,9 +17,6 @@
   },
   "homepage": "https://github.com/lucamilan/serverless-dynamodb#readme",
   "dependencies": {
-    "aws-sdk": "^2.7.6",
-    "dotenv": "^2.0.0",
-    "serverless-plugin-write-env-vars": "^1.0.1",
-    "uuid": "^3.0.0"
+    "aws-sdk": "^2.7.6"
   }
 }
