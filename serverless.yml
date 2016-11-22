@@ -1,0 +1,85 @@
+service: dynamodb
+
+plugins:
+  - serverless-plugin-write-env-vars
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  cfLogs: true
+  stage: dev
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "s3:*"
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  object: ${self:service}-items-${self:custom.stage}
+  writeEnvVars:
+    TABLE_NAME: ${self:custom.object}
+
+functions:
+  processor:
+    description: process csv files
+    handler: handler.process
+
+resources:
+  Resources:
+   ItemsTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+       TableName: ${self:custom.object}
+       AttributeDefinitions:
+         - AttributeName: identifier
+           AttributeType: S
+       KeySchema:
+         - AttributeName: identifier
+           KeyType: HASH
+       ProvisionedThroughput:
+         ReadCapacityUnits: 5
+         WriteCapacityUnits: 5
+   CsvBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: ${self:custom.object}
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - MaxAge: 3600
+            AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - POST
+              - PUT
+            AllowedOrigins:
+              - "*.s3.amazonaws.com"
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:*
+            Function:
+              'Fn::GetAtt':
+                - ProcessorLambdaFunction
+                - Arn
+   ProcessorLambdaPermissionS3:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        'Fn::GetAtt':
+          - ProcessorLambdaFunction
+          - Arn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+
+  Outputs:
+      CsvBucket:
+        Description: 'The bucket where csv will be stored'
+        Value:
+          Ref: CsvBucket
