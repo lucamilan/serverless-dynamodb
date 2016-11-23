@@ -10,33 +10,27 @@
  */
 
 
-process.env['TABLE_NAME'] = 'yoox-mystyle-final-dev-eu-west-1-359585510514';
+process.env['TABLE_NAME'] = 'dynamodb-items-dev';
 process.env['AWS_REGION'] = 'eu-west-1';
-process.env['AWS_PROFILE'] = 'serverless';
 
 var fs = require('fs');
 
-//var app = require('./app.js');
-//var event = JSON.parse(fs.readFileSync('./server/mocks/event-api.json', 'utf8').trim());
-
 var app = require('./handler.js');
-//var event = JSON.parse(fs.readFileSync('./backend/mocks/event-unlocker-get.json', 'utf8').trim());
 var event = {};
 event = JSON.parse(fs.readFileSync('./event.json', 'utf8').trim());
 
-var context = { };
-var callback = function() {
-
+var context = {};
+var callback = function () {
     console.log("Lambda Function Complete");
 };
 
 context.done = function (err, data) {
     console.log("Lambda Function Complete");
 };
-context.succeed = function(data){
+context.succeed = function (data) {
     console.log("Lambda Function Success");
 };
-context.fail = function(err){
+context.fail = function (err) {
     console.log("Lambda Function Fail");
 };
 
