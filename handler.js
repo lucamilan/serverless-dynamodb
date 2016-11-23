@@ -7,7 +7,7 @@ const DYNAMO_MAX_REQS = 25
 const DYNAMO_TABLE = process.env.TABLE_NAME;
 
 function processRow(row) {
-  const data = row.split(';')
+  const data = row.split(';');
 
   return {
     userid : Number(data[0]),
@@ -24,9 +24,9 @@ function putItems(items) {
   const puts = items.map(item => ({PutRequest: {Item: item}}))
 
   return new Promise((resolve, reject) => {
-      var req = {}
+      var req = {};
 
-      req[DYNAMO_TABLE] = puts
+      req[DYNAMO_TABLE] = puts;
 
       dynamo.batchWrite({
         RequestItems: req
@@ -43,20 +43,20 @@ module.exports.process = (event, context, callback) => {
 
   s3.getObject(params, (err, data) => {
       if (err) {
-        context.fail(err)
+        context.fail(err);
       } else {
-        const ops = []
+        const ops = [];
 
         const items = data.Body.toString().split(/\r?\n/);
 
-        items.pop()
+        items.shift();
 
-        for (var i = 1; i < items.length; i += DYNAMO_MAX_REQS)
+        for (var i = 0; i < items.length; i += DYNAMO_MAX_REQS)
           ops.push(
             items.slice(i, i + DYNAMO_MAX_REQS).map(processRow)
-          )
+          );
 
-        const requests = ops.map(putItems)
+        const requests = ops.map(putItems);
 
         Promise.all(requests)
           .then(data => {

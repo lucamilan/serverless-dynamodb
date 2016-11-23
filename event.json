@@ -20,14 +20,14 @@
             "s3SchemaVersion":"1.0",
             "configurationId":"ID found in the bucket notification configuration",
             "bucket":{  
-               "name":"ylanding-eu-west-1-359585510514",
+               "name":"yspecial-eu-west-1-359585510514",
                "ownerIdentity":{  
                   "principalId":"Amazon-customer-ID-of-the-bucket-owner"
                },
                "arn":"bucket-ARN"
             },
             "object":{  
-               "key":"progetti/my-style-legacy/eligibles-users.csv",
+               "key":"yspecial/test-tool/eligibles-users.csv",
                "size":1234,
                "eTag":"object eTag",
                "versionId":"object version if bucket is versioning-enabled, otherwise null",

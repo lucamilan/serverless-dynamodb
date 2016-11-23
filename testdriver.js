@@ -30,8 +30,15 @@ var callback = function() {
     console.log("Lambda Function Complete");
 };
 
-context.done = function () {
+context.done = function (err, data) {
     console.log("Lambda Function Complete");
 };
+context.succeed = function(data){
+    console.log("Lambda Function Success");
+};
+context.fail = function(err){
+    console.log("Lambda Function Fail");
+};
+
 
 app.process(event, context, callback);
