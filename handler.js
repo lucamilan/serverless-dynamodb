@@ -10,8 +10,13 @@ function processRow(row) {
   const data = row.split(';')
 
   return {
-    identifier : data[0].toString(),
-    boards : []
+    userid : Number(data[0]),
+    boards : [],
+    styleAdvisor : {
+        "id" : data[1].toString(),
+        "mail" : data[2].toString(),
+        "sms" : data[3].toString()
+    }
   }
 }
 
@@ -42,11 +47,11 @@ module.exports.process = (event, context, callback) => {
       } else {
         const ops = []
 
-        const items = data.Body.toString().split(/\r?\n/)
+        const items = data.Body.toString().split(/\r?\n/);
 
         items.pop()
 
-        for (var i = 0; i < items.length; i += DYNAMO_MAX_REQS)
+        for (var i = 1; i < items.length; i += DYNAMO_MAX_REQS)
           ops.push(
             items.slice(i, i + DYNAMO_MAX_REQS).map(processRow)
           )
