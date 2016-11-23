@@ -10,13 +10,7 @@ function processRow(row) {
   const data = row.split(';');
 
   return {
-    userid : Number(data[0]),
-    boards : [],
-    styleAdvisor : {
-        "id" : data[1].toString(),
-        "mail" : data[2].toString(),
-        "sms" : data[3].toString()
-    }
+    userid : Number(data[0])
   }
 }
 
